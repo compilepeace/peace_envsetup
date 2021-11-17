@@ -1,0 +1,8 @@
+" set line numbers
+set number	
+
+" turn search highlights on
+set hlsearch
+
+" turn incremental search on
+set incsearch

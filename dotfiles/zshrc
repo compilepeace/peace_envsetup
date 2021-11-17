@@ -1,0 +1,9 @@
+# configuration file for shell
+
+# make shorthand notation (use unalias <alias_name>: to disable an alias)
+alias ll="ls -lAtch"
+alias la="ls -A"
+alias sl=ls
+alias mv="mv -i"
+alias mkdir="mkdir -p"
+
