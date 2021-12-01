@@ -1,2 +1,5 @@
 [alias]
 graph = log --all --graph --decorate 
+[user]
+	email = compilepeace@gmail.com
+	name = compilepeace

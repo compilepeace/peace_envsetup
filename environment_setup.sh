@@ -15,7 +15,9 @@ setup_dotfiles () {
 
 install_tools () {
 	echo_ "basic utilities"
-	sudo apt install -y python3 python3-pip vim git gcc g++ gdb yasm nasm build-essential make net-tools
+	# rr : reverse record/replay debugger (integration for gdb), doesn't work with virtualbox
+	sudo apt install -y python3 python3-pip vim git gcc g++ gdb rr yasm nasm build-essential make net-tools openssl gpg
+	echo "done."
 	
 	install_vim_plugins
 
@@ -23,10 +25,12 @@ install_tools () {
 	sudo apt install -y tldr
 	tldr -u		 	# update tldr database
 	sudo apt install -y hexedit htop tree 
+	echo "done."
 
 	echo_ "visual studio code"
 	sudo snap install code
 	sudo snap install p7zip-desktop
+	echo "done."
 
 	echo_ "profilers (memory,line profiler,cpu)"
 	# To use memory_profiler, decorate the function (to be analyzed) with '@profile' (after importing 'profile' keyword - from memory_profiler import profile)
@@ -37,10 +41,15 @@ install_tools () {
 	sudo apt install -y python3-line-profiler	# kernprof -l -v
 	sudo apt install -y time			# time <sample.sh>
 	sudo apt install htop				# System rsrcs profiler
-	
+	echo "done."
 	
 	echo_ "static analyzers & linters"
 	sudo apt install -y writegood shellcheck pyflakes3
+	echo "done."
+
+	echo_ "Program Visualisation tools"
+	pip3 install pycallgraph graphviz	# pycallgraph uses graphviz 
+	echo "done."
 }
 
 
@@ -69,7 +78,7 @@ customize_env () {
 	echo "done."
 
 	echo_ "terminal multiplexer (tmux)"
-	sudo apt install -y tmux
+	sudo apt install -y tmux xclip 		# xclip is installed to share tmux & clipboard in ~/.tmux.conf
 }
 
 install_vim_plugins () {
