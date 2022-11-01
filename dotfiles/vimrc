@@ -1,8 +1,18 @@
 " set line numbers
 set number	
-
 " turn search highlights on
 set hlsearch
-
 " turn incremental search on
 set incsearch
+
+" set tab width to 4
+set tabstop=4
+set shiftwidth=4
+" expand tabs to spaces
+set expandtab
+" when hitting <BS>, pretend like a tab is removed (even if spaces
+set softtabstop=4	
+
+" apply indentation of the current line to the next
+set autoindent
+set smartindent
