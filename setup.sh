@@ -106,6 +106,26 @@ debugger()
 	debugMsg "Installing pwndbg plugin for GNU Gdb" "$STATUS"
 }
 
+radare()
+{
+	git clone https://github.com/radareorg/radare2 "$GHAR/radare2/" && "$GHAR/radare2/sys/install.sh"
+	updateStatus "$?"
+	debugMsg "Installing radare2 framework" "$STATUS"
+
+	# install ghidra decompiler plugin for radare2 
+	r2pm update && r2pm -ci r2ghidra
+	updateStatus "$?"
+	debugMsg "Installing r2ghidra plugin" "$STATUS"
+}
+
+security_tools()
+{
+	# reverse engineering user-mode software
+	debugger		# dynamic analysis
+	radare			# static analysis
+	
+}
+
 
 if [ "$#" -gt 0 ]
 then
@@ -113,7 +133,7 @@ then
 	then
 		debugMsg "setting up everything." "INFO"
 		shell
-		debugger
+		security_tools
 	else
 		for cmd in "$@"
 		do
