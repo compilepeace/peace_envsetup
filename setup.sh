@@ -12,6 +12,7 @@ Usage:
 com
 
 # Default CONFIGURATION parameters (global variables)
+GHAR=~/ghar/
 COLOR_BRED="\033[1m\033[31m"
 COLOR_BGREEN="\033[1m\033[32m"
 COLOR_BYELLOW="\033[1m\033[33m"
@@ -36,7 +37,7 @@ debugMsg()
 		*)								# default case
 			MSG_STRING="$COLOR_RESET[ ]"
 	esac
-		
+
 	MSG_STRING="$MSG_STRING $1 $COLOR_RESET"
 	echo -e "$MSG_STRING"
 }
@@ -53,6 +54,7 @@ updateStatus()
 	fi
 }
 
+#----------------------------------------------------------------------------------------------
 
 # setup dotfile symbolic links
 dotfiles () {
@@ -67,20 +69,20 @@ dotfiles () {
 # setup shell theme
 shell()
 {	
-    # ZSH
+	# ZSH
 	sudo apt install zsh -y
 	updateStatus "$?"
-	debugMsg "installed zsh." "$STATUS"
+	debugMsg "installing zsh." "$STATUS"
 
     # install oh-my-zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-	updateStatus "$?"
-	debugMsg "installed OH-MY-ZSH." "$STATUS"
+    updateStatus "$?"
+    debugMsg "installing OH-MY-ZSH." "$STATUS"
 
 	# install powerlevel-10k (to configure run - p10k configure)
 	git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 	updateStatus "$?"
-	debugMsg "Installed powerlevel10k, to configure type -> p10k configure" "$STATUS"
+	debugMsg "Installing powerlevel10k, to configure type -> p10k configure" "$STATUS"
 
 	# change defaut shell to zsh
 	sudo chsh -s $(which zsh)
@@ -90,17 +92,33 @@ shell()
 	debugMsg "You may want to restart your system to reflect changes" "INFO"
 }
 
+# setup GDB with pwndbg plugin
+debugger()
+{
+	# install GDB
+	sudo apt install gdb
+	updateStatus "$?"
+	debugMsg "Installing GNU Gdb" "$STATUS"
+
+	# extend GDB features with pwndbg plugin
+	git clone https://github.com/pwndbg/pwndbg "$GHAR/pwndbg" && cd "$GHAR/pwndbg" && ./setup.sh
+	updateStatus "$?"
+	debugMsg "Installing pwndbg plugin for GNU Gdb" "$STATUS"
+}
+
+
 if [ "$#" -gt 0 ]
 then
 	if [[ "$1" == "all" ]]
 	then
 		debugMsg "setting up everything." "INFO"
 		shell
+		debugger
 	else
 		for cmd in "$@"
 		do
 			$cmd
-    	done
+		done
 	fi
 	dotfiles
 else
