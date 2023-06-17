@@ -8,7 +8,7 @@ PoE:
     This script sets up my working environment on any machine.
 
 Usage:
-	$ ./setup.bash
+	$ ./setup.bash task 
 com
 
 # Default CONFIGURATION parameters (global variables)
@@ -57,7 +57,8 @@ updateStatus()
 #----------------------------------------------------------------------------------------------
 
 # setup dotfile symbolic links
-dotfiles () {
+dotfiles ()
+{
 	# yet to be written (using ln -s)
 	for file in $(ls ./dotfiles); do
 		debugMsg "creating symbolic link : ln -s ./dotfiles/$file ~/.$file" "info"
@@ -66,15 +67,52 @@ dotfiles () {
 	done
 }
 
+# foundational setup
+basic ()
+{
+	# update
+	sudo apt update -y
+	updateStatus "$?"
+	debugMsg "updating system." "$STATUS"
+
+	# utilities
+	sudo apt install -y vim git tmux xclip build-essential gcc g++ nasm gdb hexedit tree make net-tools openssl gpg htop time shellcheck curl
+	updateStatus "$?"
+	debugMsg "installing fundamental utilities." "$STATUS"
+
+	# snap packages
+	sudo snap install code --classic
+	sudo snap install p7zip-desktop
+	updateStatus "$?"
+	debugMsg "installing snap packges." "$STATUS"
+
+	# VMs 
+	# sudo apt --fix-broken install		# install dependencies of virtualbox
+	sudo apt install -y virtualbox 
+	updateStatus "$?"
+	debugMsg "installing virtualbox." "$STATUS"
+
+	# autoremove
+	sudo apt autoremove -y
+}
+
 # setup shell theme
 shell()
 {	
+	# Alacritty terminal emulator
+	# with snap installation - a few programs like 'hexedit' may have symbol version issues
+	# set LD_LIBRARY=	(empty) to overcome this issue
+	sudo snap install alacritty --classic
+	updateStatus "$?"
+	debugMsg "installing Alacritty." "$STATUS"
+
 	# ZSH
 	sudo apt install zsh -y
 	updateStatus "$?"
 	debugMsg "installing zsh." "$STATUS"
 
     # install oh-my-zsh
+	rm -rf /home/abhinav/.oh-my-zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     updateStatus "$?"
     debugMsg "installing OH-MY-ZSH." "$STATUS"
@@ -84,8 +122,9 @@ shell()
 	updateStatus "$?"
 	debugMsg "Installing powerlevel10k, to configure type -> p10k configure" "$STATUS"
 
-	# change defaut shell to zsh
+	# change defaut shell to zsh (both for current & root)
 	sudo chsh -s $(which zsh)
+	chsh -s $(which zsh)
 	updateStatus "$?"
 	debugMsg "default shell updated to ZSH." "$STATUS"
 
@@ -123,17 +162,24 @@ security_tools()
 	# reverse engineering user-mode software
 	debugger		# dynamic analysis
 	radare			# static analysis
-	
 }
 
+embedded_dev()
+{
+	sudo apt install -y openocd gdb-multiarch screen qemu-user-static
+	updateStatus "$?"
+	debugMsg "Installing embedded development environment" "$STATUS"
+}
 
 if [ "$#" -gt 0 ]
 then
 	if [[ "$1" == "all" ]]
 	then
 		debugMsg "setting up everything." "INFO"
+		basic
 		shell
 		security_tools
+		embedded_dev
 	else
 		for cmd in "$@"
 		do

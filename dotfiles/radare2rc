@@ -1,0 +1,17 @@
+#------------------------------------------------------------------------------------------------
+# radare configuration file : ~/.radare2rc
+# 'e' means evaluate, enter 'e' to list all available configurable variables
+
+# comment assembly code on right, if fits on screen
+e asm.cmt.right = true 
+
+# while in visual mode, display stack & register values on top of disassembly view
+e cmd.stack = true
+
+# pretty output for arrows and lines
+e scr.utf8 = true
+
+# set color theme
+eco solarized
+
+#-------------------------------------------------------------------------------------------------
